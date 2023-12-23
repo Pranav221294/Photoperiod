@@ -69,13 +69,20 @@ void loop()
      {
          lastUpdateTime = currentTime;
          
-        oled_set_display();
+        //oled_set_display();
+         CLK_SET_OLED();
+         YEAR_SET_OLED();
+         STARTCLK_SET_OLED();
+         PHOTO_SET_OLED();
      
      }
   }
  
 
   key_pressing_func();
+  Ent_key();
+  inc_key();
+  dec_key();
 
 }
 
