@@ -31,31 +31,38 @@ enum  SET{
            };
 
 SET setting = CLK_HRS;
-typedef struct
-          {
-            int SET_CLKHRS = 0;
-            int SET_CLKMIN= 0;
-            int SET_CLKSEC= 0;
-            int SET_DAY= 0;
-            int SET_MONTH= 0;
-            int SET_YEAR= 0;
-            int SET_START_CLK_HRS = 0;
-            int SET_START_CLK_MIN = 0;
-            int SET_START_CLK_SEC = 0; 
-            int SET_PHOTO_CLK_HRS = 0;
-            int SET_PHOTO_CLK_MIN = 0;
-            int SET_PHOTO_CLK_SEC = 0; 
-            int SET_DURATION = 0;
-            int SET_STOP_CLK_HRS = 0;
-            int SET_STOP_CLK_MIN = 0;
-            int SET_STOP_CLK_SEC = 0; 
-           // int SET_DURATION = 0;
 
-          } SETTING;
+SETTING_11 SET_VARIABLES ;  // Initializing to 0
+SETTING_11 STORE_VARIABLES ;
+SETTING_11 LIVE_VARIABLES ;
+//SETTING_11 COMP_VARIABLES ;
+
+// typedef struct
+//           {
+//             int SET_CLKHRS = 0;
+//             int SET_CLKMIN= 0;
+//             int SET_CLKSEC= 0;
+//             int SET_DAY= 0;
+//             int SET_MONTH= 0;
+//             int SET_YEAR= 0;
+//             int SET_START_CLK_HRS = 0;
+//             int SET_START_CLK_MIN = 0;
+//             int SET_START_CLK_SEC = 0; 
+//             int SET_PHOTO_CLK_HRS = 0;
+//             int SET_PHOTO_CLK_MIN = 0;
+//             int SET_PHOTO_CLK_SEC = 0; 
+//             int SET_DURATION = 0;
+//             int SET_STOP_CLK_HRS = 0;
+//             int SET_STOP_CLK_MIN = 0;
+//             int SET_STOP_CLK_SEC = 0; 
+//            // int SET_DURATION = 0;
+
+//           } SETTING_11;
           
-  SETTING SET_VARIABLES;
-  SETTING STORE_VARIABLES;
-  SETTING LIVE_VARIABLES;
+//   SETTING_11 SET_VARIABLES;
+//   SETTING_11 STORE_VARIABLES;
+//   SETTING_11 LIVE_VARIABLES;
+//   SETTING_11 COMP_VARIABLES;
 
 int startTimeHour = 0;
 int startTimeMinute = 0;
@@ -715,6 +722,12 @@ void loadSettings()
 
   preferences.end();
 
+  calculateStopTime(SET_VARIABLES.SET_START_CLK_HRS, SET_VARIABLES.SET_START_CLK_MIN, SET_VARIABLES.SET_PHOTO_CLK_HRS,SET_VARIABLES.SET_PHOTO_CLK_MIN, &SET_VARIABLES.SET_STOP_CLK_HRS, &SET_VARIABLES.SET_STOP_CLK_MIN);
+  Serial.println("SET_STOP_CLK_HRS: " + String(SET_VARIABLES.SET_STOP_CLK_HRS));
+  Serial.println("SET_STOP_CLK_MIN: " + String(SET_VARIABLES.SET_STOP_CLK_MIN));
+
+
+
 //   DateTime rtcTime(SET_VARIABLES.SET_YEAR, SET_VARIABLES.SET_MONTH, SET_VARIABLES.SET_DAY,
 //                    SET_VARIABLES.SET_CLKHRS, SET_VARIABLES.SET_CLKMIN, SET_VARIABLES.SET_CLKSEC);
 //   rtc.adjust(rtcTime);
@@ -746,6 +759,8 @@ void saveSettings()
   DateTime rtcTime(SET_VARIABLES.SET_YEAR, SET_VARIABLES.SET_MONTH, SET_VARIABLES.SET_DAY,
                    SET_VARIABLES.SET_CLKHRS, SET_VARIABLES.SET_CLKMIN, SET_VARIABLES.SET_CLKSEC);
   rtc.adjust(rtcTime);
+
+
 }
 
 void liveSettings() 
@@ -1025,10 +1040,10 @@ void dec_key()
             SET_VARIABLES.SET_STOP_CLK_SEC = (SET_VARIABLES.SET_STOP_CLK_SEC - 1 + 60) % 60;
             break;  
         case PHOTO_CLK_HRS:
-             SET_VARIABLES.SET_PHOTO_CLK_HRS = (SET_VARIABLES.SET_STOP_CLK_HRS - 1 + 24) % 24;;
+             SET_VARIABLES.SET_PHOTO_CLK_HRS = (SET_VARIABLES.SET_PHOTO_CLK_HRS - 1 + 24) % 24;;
             break;
         case PHOTO_CLK_MIN:
-             SET_VARIABLES.SET_PHOTO_CLK_MIN = (SET_VARIABLES.SET_STOP_CLK_MIN - 1 + 60) % 60;
+             SET_VARIABLES.SET_PHOTO_CLK_MIN = (SET_VARIABLES.SET_PHOTO_CLK_MIN - 1 + 60) % 60;
             break;
       
         // case DURATION:
@@ -1039,5 +1054,26 @@ void dec_key()
 
 
 
+
+}
+
+// Function to calculate stop time and update the result using pointers
+void calculateStopTime(int start_hours, int start_minutes, int photo_hours, int photo_minutes, int *stop_hours, int *stop_minutes)
+ {
+    *stop_hours = (start_hours + photo_hours) % 24;  // Modulo 24 for a 24-hour clock
+    *stop_minutes = start_minutes + photo_minutes;
+
+    // Adjust hours and minutes if needed
+    if (*stop_minutes >= 60) 
+    {
+        *stop_hours += 1;
+        *stop_minutes -= 60;
+    }
+}
+
+ SETTING_11 get_func_stop_hrs_n_stop_min()
+ {
+
+    return SET_VARIABLES;
 
 }

@@ -12,6 +12,7 @@ extern ezButton Ent_Button; // Enter button
 extern ezButton Inc_Button; // Increment button      
 extern ezButton Dec_Button; // Decrement button
 
+
 extern RTC_DS3231 rtc;
 extern unsigned long lastBlinkMillis;
 //extern const long blinkInterval;
@@ -20,6 +21,8 @@ extern U8X8_SH1106_128X64_NONAME_HW_I2C disp;
 // put function declarations here:
 unsigned long lastUpdateTime = 0;
 const unsigned long updateInterval = 100;
+
+SETTING_11 COMP_VARIABLES;
 
 void setup() 
 {
@@ -102,6 +105,10 @@ void initization()
  
    intilisation_RTC_n_oled();
     loadSettings(); 
+   COMP_VARIABLES = get_func_stop_hrs_n_stop_min();
+
+  Serial.println("COMP_VARIABLES: " + String(COMP_VARIABLES.SET_STOP_CLK_HRS));
+  Serial.println("COMP_VARIABLES: " + String(COMP_VARIABLES.SET_STOP_CLK_MIN));
   //rtc.adjust(DateTime(__DATE__, __TIME__));
 
   
